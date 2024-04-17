@@ -31,7 +31,7 @@ class TwoD_TBP(DICOM):
                 # Get the tag name
                 tag_name = TAGS.get(tag_id, tag_id)
                 # Filter for camera-related tags
-                if tag_name in ["Make", "Model", "LensModel", "FocalLength", "WhiteBalance", "DateTimeOriginal", "ImageWidth", "ImageLength", "ExposureTime", "FNumber", "ISO"]:
+                if tag_name in [ "Make", "Model", "LensModel", "FocalLength", "WhiteBalance", "DateTimeOriginal", "ImageWidth", "ImageLength", "ExposureTime", "FNumber", "ISO" ]:
                     camera_properties[tag_name] = value
             return camera_properties
 
@@ -80,7 +80,7 @@ class TwoD_TBP(DICOM):
         self.dcm.ImageOrientation = '1\\0\\0\\0\\1\\0'
         self.dcm.PixelSpacing = 3
 
-    def add_VL_Image_Calibration_Module(self):
+    def add_VL_Image_Calibration_Module(self, params):
         # Define private creator tag
         private_creator = "VL Image Calibration Module"
         # Add a private block with a specific tag (e.g., (0x0011, 0x0010) - just an example)
@@ -91,33 +91,33 @@ class TwoD_TBP(DICOM):
         
         # Add attributes to the private block
         # a. Focal Length
-        block_start.add_new(element_number, 'DS', '1560')  # FD is for float double
+        block_start.add_new(element_number, 'DS', params["FocalLength"])  # FD is for float double
         element_number += 1
 
         # b. Principal Point
         principal_point = [285.2,427.0] 
-        block_start.add_new(element_number, 'FL', principal_point)  # Just an example value
+        block_start.add_new(element_number, 'FL', params["PrincipalPoint"])  # Just an example value
         element_number += 1
 
         # c. Radial Distortion
         radial_distortion = [ 0.03583441216871274, 0.26, 0.5682430959708085 ]  # Example values
-        block_start.add_new(element_number, 'FL', radial_distortion)
+        block_start.add_new(element_number, 'FL', params["RadialDistortion"])
         element_number += 1
 
         # d. Parfocal
 
         parfocal = 1
-        block_start.add_new(element_number, 'SS', parfocal)
+        block_start.add_new(element_number, 'SS', params["Parfocal"])
         element_number += 1
 
         # e. Focus Distance
         focus_distance = 1.47
-        block_start.add_new(element_number, 'FL', focus_distance)
+        block_start.add_new(element_number, 'FL', params["FocusDistance"])
         element_number += 1
 
         # f. Tangential Distortion
         # tangential_distortion = [0.01, -0.01]  # Example values
-        # block_start.add_new(element_number, 'FD', tangential_distortion)
+        # block_start.add_new(element_number, 'FD', params["TangentialDistortion"])
         # element_number += 1
 
     def twoD_attributes(self):
