@@ -8,7 +8,7 @@ class ThreeD_TBP(DICOM):
     def __init__(self, data):
         super().__init__(data)
         # Add any additional initialization code here
-        self.threeD_attributes()
+        self.init_tbp_3d_module()
         
     def load_mesh(self, mesh_path):
         if os.path.exists(mesh_path) and (mesh_path.lower() in ['.pcd', '.obj' , '.mlt']):

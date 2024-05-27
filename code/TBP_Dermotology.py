@@ -9,7 +9,7 @@ class Dermatology_TBP(DICOM):
     def __init__(self, data):
         super().__init__(data)
         # Add any additional initialization code here
-        self.threeD_attributes()
+        self.init_tbp_3d_module()
         
     def load_img(self, img_path):
         if os.path.exists(img_path) and (img_path.lower() in ['.png', '.jpeg' , '.jpg']):
@@ -40,6 +40,16 @@ class Dermatology_TBP(DICOM):
         block_start.add_new(element_number, 'FL', params["2DCoordinateData"])
         element_number += 1
 
-
         block_start.add_new(element_number, 'SS', params["3DCoordinateData"])
         element_number += 1
+        
+        # bayer coordinates -> x, y, z values that sum up to 1
+        block_start.add_new(element_number, 'SS', params["3DBayerCoordinates"])
+        element_number += 1
+        
+        # if mesh exists for a study, the triangle id is an integer that coresponds to the triangle that 
+        # contains the lesion. In case the lesion falls in the intersection of multiple triangles, the triangle 
+        # where it's centroid is present should be assigned  
+        block_start.add_new(element_number, 'FL', params["TriangleNumber"])
+        element_number += 1 
+        
